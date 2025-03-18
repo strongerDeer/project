@@ -41,7 +41,7 @@ export default function DevTools() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 bg-gray-800 text-white p-4 rounded shadow-lg z-50">
+    <div className="fixed bottom-4 left-4 bg-gray-800 text-white p-4 rounded shadow-lg z-50">
       <h3 className="text-lg font-bold mb-2">PWA 개발 도구</h3>
       <div className="space-y-2">
         <button
