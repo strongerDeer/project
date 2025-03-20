@@ -6,6 +6,8 @@ import SendbirdProvider from "@sendbird/uikit-react/SendbirdProvider";
 import GroupChannelList from "@sendbird/uikit-react/GroupChannelList";
 import GroupChannel from "@sendbird/uikit-react/GroupChannel";
 import UserProfile from "./UserProfile";
+import GroupChannelListHeader from "@sendbird/uikit-react/GroupChannelList/components/GroupChannelListHeader";
+import CustomChannelPreview from "./CustomChannelPreview";
 
 export default function SendbirdUI({ id }: { id: string }) {
   const [currentChannelUrl, setCurrentChannelUrl] = useState<string>("");
@@ -17,21 +19,36 @@ export default function SendbirdUI({ id }: { id: string }) {
       <SendbirdProvider appId={appId} userId={id}>
         <UserProfile />
         <div className="w-80 h-full border-r border-gray-200">
+          {/* 대화방 리스트 */}
           <GroupChannelList
-            // 채널 선택 시
-            onChannelSelect={(channel) => {
-              if (channel) {
-                setCurrentChannelUrl(channel.url);
-              }
-            }}
+            // 선택된 채널
+            selectedChannelUrl={currentChannelUrl}
             //채널 생성중
             onChannelCreated={(channel) => {
               setCurrentChannelUrl(channel.url);
             }}
-            // 선택된 채널
-            selectedChannelUrl={currentChannelUrl}
+            // 채널 선택 시
+            onChannelSelect={(channel) => {
+              if (!channel) return;
+              setCurrentChannelUrl(channel.url);
+            }}
             // 타이핑 여부
             isTypingIndicatorEnabled={true}
+            // header
+            renderHeader={() => (
+              <GroupChannelListHeader
+                renderLeft={() => <>Left</>}
+                renderMiddle={() => <>Middle</>}
+                renderRight={() => <>Right</>}
+              />
+            )}
+            // preview
+            renderChannelPreview={({ channel, onLeaveChannel }) => (
+              <CustomChannelPreview
+                channel={channel}
+                onLeaveChannel={onLeaveChannel}
+              />
+            )}
           />
         </div>
         {currentChannelUrl && (
@@ -43,10 +60,10 @@ export default function SendbirdUI({ id }: { id: string }) {
                   <h2 className="font-semibold">채팅방</h2>
                 </div>
               )}
-              // renderMessage={(props) => {
-              //   const { message } = props;
-              //   return <div>{message.message}</div>;
-              // }}
+
+              // renderMessage={({ message }) => (
+              //   <CustomizedMessageItem message={message} />
+              // )}
             />
           </div>
         )}
